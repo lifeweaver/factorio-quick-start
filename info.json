@@ -1,0 +1,11 @@
+{
+  "name": "quick-start",
+  "version": "1.0.1",
+  "title": "Quick Start",
+  "author": "Pasukaru",
+  "contact": "",
+  "homepage": "",
+  "factorio_version": "0.15",
+  "dependencies": ["base >= 0.15"],
+  "description": "Start with bots, electricity, belts and other things to skip the early burner phase."
+}
