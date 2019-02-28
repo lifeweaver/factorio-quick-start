@@ -21,18 +21,19 @@ script.on_event(defines.events.on_player_created, function(event)
 		{3, "splitter"},
 		{4, "inserter"},
 		{5, "medium-electric-pole"},
-		{6, "deconstruction-planner"},
+        {6, "burner-mining-drill"},
+        {7, "stone-furnace"},
 		{10, "car"}
 	}
 	kits["small"]["items"] = {
-		{"steel-axe", 10},
-		{"iron-plate", 192},
+		{"iron-plate", 200},
 		{"copper-plate", 200},
 		{"iron-gear-wheel", 50},
 		{"transport-belt", 500},
 		{"splitter", 50},
 		{"underground-belt", 50},
 		{"burner-mining-drill", 20},
+		{"stone-furnace", 20},
 		{"coal", 100}
 	}
 		
@@ -43,12 +44,12 @@ script.on_event(defines.events.on_player_created, function(event)
 		{3, "splitter"},
 		{4, "inserter"},
 		{5, "medium-electric-pole"},
-		{6, "deconstruction-planner"},
+        {6, "electric-mining-drill"},
+        {7, "stone-furnace"},
 		{10, "car"}
 	}
 	kits["medium"]["items"] = {
-		{"steel-axe", 10},
-		{"iron-plate", 592},
+		{"iron-plate", 600},
 		{"copper-plate", 400},
 		{"iron-gear-wheel", 200},
 		{"electronic-circuit", 200},
@@ -71,7 +72,6 @@ script.on_event(defines.events.on_player_created, function(event)
 		{"coal", 200},
 		{"construction-robot", 50},
 		{"lab", 10},
-		{"deconstruction-planner", 1},
 		{"power-armor", 1}
 	}
 	kits["medium"]["armorItems"] = {
@@ -93,13 +93,11 @@ script.on_event(defines.events.on_player_created, function(event)
 		{3, "splitter"},
 		{4, "inserter"},
 		{5, "medium-electric-pole"},
-		{6, "deconstruction-planner"},
 		{10, "car"}
 	}
 	kits["big"]["items"] = {
 		{"power-armor", 1},
-		{"steel-axe", 10},
-		{"iron-plate", 592},
+		{"iron-plate", 600},
 		{"copper-plate", 400},
 		{"iron-gear-wheel", 200},
 		{"electronic-circuit", 200},
@@ -129,8 +127,7 @@ script.on_event(defines.events.on_player_created, function(event)
 		{"roboport", 20},
 		{"construction-robot", 50},
 		{"logistic-robot", 300},
-		{"lab", 10},
-		{"deconstruction-planner", 1}
+		{"lab", 10}
 	}
 	kits["big"]["armorItems"] = kits["medium"]["armorItems"]
 	kits["big"]["technologies"] = {
@@ -145,10 +142,17 @@ script.on_event(defines.events.on_player_created, function(event)
 		{"electronics"},
 		{"engine"},
 		{"electric-engine"},
-		{"flying"},
+		{"logistic-science-pack"},
+		{"fluid-handling"},
+		{"lubricant"},
 		{"robotics"},
 		{"logistic-robotics"},
 		{"construction-robotics"},
+		{"utility-science-pack"},
+		{"chemical-science-pack"},
+		{"advanced-electronics-2"},
+		{"low-density-structure"},
+		{"advanced-material-processing"},
 		{"logistic-system"}
 	}
 	
@@ -158,19 +162,17 @@ script.on_event(defines.events.on_player_created, function(event)
 		kit = kits["medium"]
 	end
 	
-	-- Find quickbar (usually player_quickbar, but god_quickbar in sandbox mode)
-	local quickbar = player.get_inventory(defines.inventory.player_quickbar)
-	if quickbar ~= nil and not quickbar.can_set_filter(1, "transport-belt") then
-		quickbar = player.get_inventory(defines.inventory.god_quickbar)
-	end
-	
 	-- Setup quickbar favorites
-	if quickbar ~= nil and quickbar.can_set_filter(1, "transport-belt") ~= nil then
-		quickbar.clear()
-		for k,v in pairs(kit["quickbar"]) do
-			quickbar.set_filter(v[1], v[2])
-		end
-	end
+    for k,v in pairs(kit["quickbar"]) do
+        player.set_quick_bar_slot(v[1], v[2])
+    end
+    
+    -- Remove standard items
+    local playerInventory = player.get_main_inventory()
+    playerInventory.remove({name="iron-plate", count=8})
+    playerInventory.remove({name="burner-mining-drill", count=1})
+    playerInventory.remove({name="stone-furnace", count=1})
+    playerInventory.remove({name="wood", count=1})
 	
 	-- Add items
 	for k,v in pairs(kit["items"]) do
@@ -195,7 +197,6 @@ script.on_event(defines.events.on_player_created, function(event)
 			end
 		end
 	end
-	
 	
 	-- Unlock technologies
 	if kit["technologies"] ~= nil then
