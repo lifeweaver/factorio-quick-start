@@ -1,14 +1,14 @@
 script.on_event(defines.events.on_player_created, function(event)
 	local player = game.players[event.player_index]
 	local inventories = {
-		defines.inventory.player_armor,
-		defines.inventory.player_main,
+		defines.inventory.character_armor,
+		defines.inventory.character_main,
 		defines.inventory.player_quickbar,
-		defines.inventory.player_guns,
-		defines.inventory.player_ammo,
+		defines.inventory.character_guns,
+		defines.inventory.character_ammo,
 		defines.inventory.player_tools,
-		defines.inventory.player_vehicle,
-		defines.inventory.player_player_trash
+		defines.inventory.character_vehicle ,
+		defines.inventory.character_trash
 	}
 	
 	-- Setup kit presets
