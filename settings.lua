@@ -1,7 +1,7 @@
 data:extend({
   {
     type = "string-setting",
-    name = "quick-start-kit",
+    name = "crash-quick-start-kit",
     order = "aa",
     setting_type = "startup",
     default_value = "medium",
