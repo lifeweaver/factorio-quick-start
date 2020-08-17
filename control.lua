@@ -132,6 +132,7 @@ end
 
 function on_player_created(event)
 	if not remote.interfaces["freeplay"] then return end
+	
 	local kitSetting = settings.startup["crash-quick-start-kit"].value
 	local kit = kits[kitSetting]
 	if kit == nil then
