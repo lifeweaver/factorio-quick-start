@@ -113,8 +113,6 @@ kits["big"]["quickbar"] = {
 	{7, "steel-furnace"},
 	{10, "car"}
 }
-
-
 kits["big"]["technologies"] = {
 	{"automation"},
 	{"steel-processing"},
@@ -178,9 +176,9 @@ function on_player_created(event)
 	end
 	
 	-- Setup quickbar favorites
-    for k,v in pairs(kit["quickbar"]) do
-        player.set_quick_bar_slot(v[1], v[2])
-    end
+	for k,v in pairs(kit["quickbar"]) do
+		player.set_quick_bar_slot(v[1], v[2])
+	end
 	
 end
 
