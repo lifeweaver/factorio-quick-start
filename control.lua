@@ -42,14 +42,8 @@ function on_init()
 		["lab"] = 10,
 		["power-armor"] = 1,
 		["fusion-reactor-equipment"] = 1,
-		["personal-roboport-equipment"] = 1,
-		["personal-roboport-equipment"] = 1,
-		["personal-roboport-equipment"] = 1,
-		["personal-roboport-equipment"] = 1,
-		["personal-roboport-equipment"] = 1,
-		["battery-equipment"] = 1,
-		["battery-equipment"] = 1,
-		["battery-equipment"] = 1
+		["personal-roboport-equipment"] = 5,
+		["battery-equipment"] = 3,
 	}
 
 	kits["big"] = {
@@ -87,14 +81,8 @@ function on_init()
 		["lab"] = 10,
 		["power-armor"] = 1,
 		["fusion-reactor-equipment"] = 1,
-		["personal-roboport-equipment"] = 1,
-		["personal-roboport-equipment"] = 1,
-		["personal-roboport-equipment"] = 1,
-		["personal-roboport-equipment"] = 1,
-		["personal-roboport-equipment"] = 1,
-		["battery-equipment"] = 1,
-		["battery-equipment"] = 1,
-		["battery-equipment"] = 1
+		["personal-roboport-equipment"] = 5,
+		["battery-equipment"] = 3,
 	}
 	
 	local kitSetting = settings.startup["crash-quick-start-kit"].value
