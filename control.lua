@@ -4,7 +4,8 @@ function on_init()
 	-- Setup kit presets
 	local kits = {}
 	
-	kits["small"] = {
+	kits["small"] = {}
+	kits["small"]["items"] = {
 		["iron-plate"] = 200,
 		["copper-plate"] = 200,
 		["iron-gear-wheel"] = 50,
@@ -16,7 +17,8 @@ function on_init()
 		["coal"] = 100
 	}
 		
-	kits["medium"] = {
+	kits["medium"] = {}
+	kits["medium"]["items"] = {
 		["iron-plate"] = 600,
 		["copper-plate"] = 400,
 		["iron-gear-wheel"] = 200,
@@ -45,8 +47,9 @@ function on_init()
 		["personal-roboport-equipment"] = 5,
 		["battery-equipment"] = 3,
 	}
-
-	kits["big"] = {
+	
+	kits["big"] = {}
+	kits["big"]["items"] = {
 		["power-armor"] = 1,
 		["iron-plate"] = 600,
 		["copper-plate"] = 400,
@@ -85,6 +88,32 @@ function on_init()
 		["battery-equipment"] = 3,
 	}
 	
+	kits["big"]["technologies"] = {
+		{"automation"},
+		{"steel-processing"},
+		{"automation-2"},
+		{"oil-processing"},
+		{"plastics"},
+		{"advanced-electronics"},
+		{"sulfur-processing"},
+		{"battery"},
+		{"electronics"},
+		{"engine"},
+		{"electric-engine"},
+		{"logistic-science-pack"},
+		{"fluid-handling"},
+		{"lubricant"},
+		{"robotics"},
+		{"logistic-robotics"},
+		{"construction-robotics"},
+		{"utility-science-pack"},
+		{"chemical-science-pack"},
+		{"advanced-electronics-2"},
+		{"low-density-structure"},
+		{"advanced-material-processing"},
+		{"logistic-system"}
+	}
+	
 	local kitSetting = settings.startup["crash-quick-start-kit"].value
 	local kit = kits[kitSetting]
 	if kit == nil then
@@ -93,7 +122,7 @@ function on_init()
 
 	-- Add items
 	local created_items = remote.call("freeplay", "get_created_items")
-	for k,v in pairs(kit) do
+	for k,v in pairs(kit["items"]) do
 		created_items[k] = v
 	end
 	remote.call("freeplay", "set_created_items", created_items)
