@@ -126,6 +126,14 @@ function on_init()
 		created_items[k] = v
 	end
 	remote.call("freeplay", "set_created_items", created_items)
+	
+		-- Unlock technologies
+	if kit["technologies"] ~= nil then
+		for k,v in pairs(kit["technologies"]) do
+			player.force.technologies[v[1]].researched = true
+		end
+	end
+	
 end
 
 script.on_init(on_init)
