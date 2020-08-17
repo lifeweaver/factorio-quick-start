@@ -13,6 +13,16 @@ kits["small"]["items"] = {
 	["stone-furnace"] = 20,
 	["coal"] = 100
 }
+kits["small"]["quickbar"] = {
+	{1, "transport-belt"},
+	{2, "underground-belt"},
+	{3, "splitter"},
+	{4, "inserter"},
+	{5, "medium-electric-pole"},
+    {6, "burner-mining-drill"},
+    {7, "stone-furnace"},
+	{10, "car"}
+}
 	
 kits["medium"] = {}
 kits["medium"]["items"] = {
@@ -44,10 +54,19 @@ kits["medium"]["items"] = {
 	["personal-roboport-equipment"] = 5,
 	["battery-equipment"] = 3,
 }
+kits["medium"]["quickbar"] = {
+	{1, "transport-belt"},
+	{2, "underground-belt"},
+	{3, "splitter"},
+	{4, "inserter"},
+	{5, "medium-electric-pole"},
+    {6, "electric-mining-drill"},
+    {7, "stone-furnace"},
+	{10, "car"}
+}
 
 kits["big"] = {}
 kits["big"]["items"] = {
-	["power-armor"] = 1,
 	["iron-plate"] = 600,
 	["copper-plate"] = 400,
 	["iron-gear-wheel"] = 200,
@@ -63,7 +82,7 @@ kits["big"]["items"] = {
 	["steel-chest"] = 50,
 	["electric-mining-drill"] = 50,
 	["medium-electric-pole"] = 400,
-	["medium-electric-pole"] = 100,
+	["big-electric-pole"] = 100,
 	["logistic-chest-requester"] =  100,
 	["logistic-chest-passive-provider"] =  100,
 	["boiler"] = 20,
@@ -84,6 +103,17 @@ kits["big"]["items"] = {
 	["personal-roboport-equipment"] = 5,
 	["battery-equipment"] = 3,
 }
+kits["big"]["quickbar"] = {
+	{1, "transport-belt"},
+	{2, "underground-belt"},
+	{3, "splitter"},
+	{4, "inserter"},
+	{5, "medium-electric-pole"},
+	{6, "electric-mining-drill"},
+	{7, "steel-furnace"},
+	{10, "car"}
+}
+
 
 kits["big"]["technologies"] = {
 	{"automation"},
@@ -139,13 +169,18 @@ function on_player_created(event)
 		kit = kits["medium"]
 	end
 	
+	local player = game.players[event.player_index]
 	-- Unlock technologies
 	if kit["technologies"] ~= nil then
-		local player = game.players[event.player_index]
 		for k,v in pairs(kit["technologies"]) do
 			player.force.technologies[v[1]].researched = true
 		end
 	end
+	
+	-- Setup quickbar favorites
+    for k,v in pairs(kit["quickbar"]) do
+        player.set_quick_bar_slot(v[1], v[2])
+    end
 	
 end
 
