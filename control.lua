@@ -113,8 +113,6 @@ kits["big"]["quickbar"] = {
 	{7, "steel-furnace"},
 	{10, "car"}
 }
-
-
 kits["big"]["technologies"] = {
 	{"automation"},
 	{"steel-processing"},
@@ -141,9 +139,17 @@ kits["big"]["technologies"] = {
 	{"logistic-system"}
 }
 
+local spidertron_items = {
+	["spidertron"] = 1,
+	["spidertron-remote"] = 1,
+	["construction-robot"] = 50,
+	["fusion-reactor-equipment"] = 1,
+	["personal-roboport-equipment"] = 5,
+	["battery-equipment"] = 3
+}
+
 function on_init()
 	if not remote.interfaces["freeplay"] then return end
-
 	
 	local kitSetting = settings.startup["crash-quick-start-kit"].value
 	local kit = kits[kitSetting]
@@ -154,10 +160,18 @@ function on_init()
 	-- Add items
 	local created_items = remote.call("freeplay", "get_created_items")
 	for k,v in pairs(kit["items"]) do
-		created_items[k] = v
+		created_items[k] = (created_items[k] or 0) + v
 	end
-	remote.call("freeplay", "set_created_items", created_items)
+
+	-- If spidertron is selected, add more items for it
+	if settings.startup["crash-quick-start-spidertron"].value == true then
+		for k,v in pairs(spidertron_items) do
+			created_items[k] = (created_items[k] or 0) + v
+		end	
+	end
 	
+	remote.call("freeplay", "set_created_items", created_items)
+		
 end
 
 function on_player_created(event)
@@ -178,9 +192,9 @@ function on_player_created(event)
 	end
 	
 	-- Setup quickbar favorites
-    for k,v in pairs(kit["quickbar"]) do
-        player.set_quick_bar_slot(v[1], v[2])
-    end
+	for k,v in pairs(kit["quickbar"]) do
+		player.set_quick_bar_slot(v[1], v[2])
+	end
 	
 end
 
