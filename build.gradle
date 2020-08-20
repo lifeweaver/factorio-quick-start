@@ -13,7 +13,7 @@ def modName = "crash-quick-start"
 def archiveName = "${modName}_${version}.zip"
 
 task clean(type:Delete) {
-	delete "$buildDir", "$distDir"
+    delete "$buildDir", "$distDir"
     doFirst {
         println "Deleting folders named ${buildDir} and ${distDir}"
     }
@@ -26,7 +26,6 @@ task createFolder(type: Copy) {
         println "Building files at ${buildDir}/${modName}"
     }
 }
-createFolder.mustRunAfter clean
 
 task createArchive(type: Zip) {
     archiveFileName = "$archiveName"
@@ -37,7 +36,6 @@ task createArchive(type: Zip) {
         println "Creating zip file named ${archiveName} from the contents of ${buildDir} in folder ${distDir}"
     }
 }
-createArchive.mustRunAfter clean
 createArchive.mustRunAfter createFolder
 
 task build {
