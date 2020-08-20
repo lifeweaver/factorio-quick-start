@@ -15,6 +15,21 @@ task createFolder(type: Copy) {
     }
 }
 
+task checkVersionNumber {
+    File infoFile = file('src/info.json')
+    infoFile.readLines().each{
+        def matcher = it =~ /"version": "([\d\.]+)"/
+        matcher.matches()
+        def matches = matcher.findAll()[0]
+        if ( matches != null ) {
+            def (_,infoVersion) = matches
+            if ( infoVersion != version) {
+                throw new InvalidUserDataException("The version for this build ($version) does not match the version in info.json ($infoVersion). This will cause Factorio to crash on startup. Build Aborted.")
+            }
+        }
+    }
+}
+
 task createArchive(type: Zip) {
     archiveFileName = "$archiveName"
     destinationDirectory = file("$distDirectory")
@@ -27,6 +42,7 @@ task createArchive(type: Zip) {
 createArchive.mustRunAfter createFolder
 
 task build {
+    dependsOn "checkVersionNumber"
     dependsOn "createFolder"
     dependsOn "createArchive"
 }
