@@ -1,34 +1,71 @@
+//Factorio checks this version in the filename against the
+//version in info.json and will reject the file if they don't match
 def version = "1.4.0" 
+
+//Your Factorio Mods directory, see https://wiki.factorio.com/Application_directory#User_data_directory
+//On Windows this is %appdata%/factorio/mods but note that env vars don't work here
+//Also make sure to replace the \ with /
+def factorio_mods_dir = "" 
 
 def buildDir = "build"
 def distDir = "dist"
-def modname = "crash-quick-start"
-def archiveName = "${modname}_${version}.zip"
+def modName = "crash-quick-start"
+def archiveName = "${modName}_${version}.zip"
 
 task clean(type:Delete) {
 	delete "$buildDir", "$distDir"
+    doFirst {
+        println "Deleting folders named ${buildDir} and ${distDir}"
+    }
 }
 
 task createFolder(type: Copy) {
     from "src", "assets", "README.md"
-    into "${buildDir}/${modname}"
+    into "${buildDir}/${modName}"
+    doFirst {
+        println "Building files at ${buildDir}/${modName}"
+    }
 }
+createFolder.mustRunAfter clean
 
 task createArchive(type: Zip) {
     archiveFileName = "$archiveName"
     destinationDirectory = file("$distDir")
 
     from "$buildDir"
+    doFirst {
+        println "Creating zip file named ${archiveName} from the contents of ${buildDir} in folder ${distDir}"
+    }
 }
+createArchive.mustRunAfter clean
+createArchive.mustRunAfter createFolder
 
-task('build') {
+task build {
     dependsOn "createFolder"
     dependsOn "createArchive"
-    tasks.findByName('createArchive').mustRunAfter 'createFolder'
 }
 
-task('buildfull') {
-    dependsOn "clean"
-    dependsOn "build"
-    tasks.findByName('build').mustRunAfter 'clean'
+task backUpExistingMod(type: Copy) {
+    from "${factorio_mods_dir}"
+    include "${modName}*"
+    into "${factorio_mods_dir}"
+
+    rename "${archiveName}", "${archiveName}.bak"
+    doFirst {
+        println "Attempting to back up existing mod in ${factorio_mods_dir}"
+    }
+}
+
+task moveNewMod(type: Copy) {
+    from "${distDir}/${archiveName}"
+    into "${factorio_mods_dir}"
+    doFirst {
+        println "Moving file ${archiveName} from ${distDir} to ${factorio_mods_dir}"
+    }
+}
+moveNewMod.mustRunAfter backUpExistingMod
+
+task patch {
+    dependsOn "backUpExistingMod"
+    dependsOn "moveNewMod"
 }
