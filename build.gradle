@@ -15,19 +15,39 @@ task createFolder(type: Copy) {
     }
 }
 
-task checkVersionNumber {
-    File infoFile = file('src/info.json')
-    infoFile.readLines().each{
-        def matcher = it =~ /"version": "([\d\.]+)"/
-        matcher.matches()
-        def matches = matcher.findAll()[0]
-        if ( matches != null ) {
-            def (_,infoVersion) = matches
-            if ( infoVersion != version) {
-                throw new InvalidUserDataException("The version for this build ($version) does not match the version in info.json ($infoVersion). This will cause Factorio to crash on startup. Build Aborted.")
+class InfoJsonCheck extends DefaultTask {
+    @Input
+    String fieldName
+    @Input
+    String value
+    @InputFile
+    File infoJson = project.file('src/info.json')
+
+    @TaskAction
+    def checkString() {
+        infoJson.readLines().each{
+            def matcher = it =~ /"${fieldName}": "(.+)"/
+            matcher.matches()
+            def matches = matcher.findAll()[0]
+            if ( matches != null ) {
+                def (_,foundValue) = matches
+                if ( foundValue != value) {
+                    throw new InvalidUserDataException("The ${fieldName} for this build ($value) does not match the ${fieldName} in info.json ($foundValue). This will cause Factorio to crash on startup. Build Aborted.")
+                }
             }
         }
+        println "$fieldName $value OK"
     }
+}
+
+task checkVersionNumber(type: InfoJsonCheck) {
+    fieldName "version"
+    value version
+}
+
+task checkModName(type: InfoJsonCheck) {
+    fieldName "name"
+    value modName
 }
 
 task createArchive(type: Zip) {
@@ -43,6 +63,7 @@ createArchive.mustRunAfter createFolder
 
 task build {
     dependsOn "checkVersionNumber"
+    dependsOn "checkModName"
     dependsOn "createFolder"
     dependsOn "createArchive"
 }
