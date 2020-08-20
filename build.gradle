@@ -1,0 +1,34 @@
+def version = "1.4.0" 
+
+def buildDir = "build"
+def distDir = "dist"
+def modname = "crash-quick-start"
+def archiveName = "${modname}_${version}.zip"
+
+task clean(type:Delete) {
+	delete "$buildDir", "$distDir"
+}
+
+task createFolder(type: Copy) {
+    from "src", "assets", "README.md"
+    into "${buildDir}/${modname}"
+}
+
+task createArchive(type: Zip) {
+    archiveFileName = "$archiveName"
+    destinationDirectory = file("$distDir")
+
+    from "$buildDir"
+}
+
+task('build') {
+    dependsOn "createFolder"
+    dependsOn "createArchive"
+    tasks.findByName('createArchive').mustRunAfter 'createFolder'
+}
+
+task('buildfull') {
+    dependsOn "clean"
+    dependsOn "build"
+    tasks.findByName('build').mustRunAfter 'clean'
+}
