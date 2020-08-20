@@ -71,6 +71,7 @@ task build {
 task backUpExistingMod(type: Copy) {
     from "${factorioModsDirectory}"
     include "${modName}*"
+    exclude "*.bak"
     into "${factorioModsDirectory}"
 
     rename "(.+)", '$1.bak'
