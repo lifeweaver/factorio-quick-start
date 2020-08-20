@@ -25,16 +25,10 @@ class InfoJsonCheck extends DefaultTask {
 
     @TaskAction
     def checkString() {
-        infoJson.readLines().each{
-            def matcher = it =~ /"${fieldName}": "(.+)"/
-            matcher.matches()
-            def matches = matcher.findAll()[0]
-            if ( matches != null ) {
-                def (_,foundValue) = matches
-                if ( foundValue != value) {
-                    throw new InvalidUserDataException("The ${fieldName} for this build ($value) does not match the ${fieldName} in info.json ($foundValue). This will cause Factorio to crash on startup. Build Aborted.")
-                }
-            }
+        def infoJsonContents = new groovy.json.JsonSlurper().parseText(infoJson.text)
+        def foundValue = infoJsonContents[fieldName]
+        if ( foundValue != value ) {
+            throw new InvalidUserDataException("The ${fieldName} for this build ($value) does not match the ${fieldName} in info.json (${foundValue}). This will cause Factorio to crash on startup. Build Aborted.")
         }
         println "$fieldName $value OK"
     }
