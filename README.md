@@ -18,7 +18,7 @@ Forked from Pasukaru's mod because the 1.0 update of Factorio broke it.
 
 Build with gradle.
 
-- `gradle build` builds the mod .zip file. The `version` and `modName` must match the one in `src/info.json`. Set then in `gradle.properties` or like `gradle build -Pversion="1.5.0"`
+- `gradle build` builds the mod .zip file. The `version` and `modName` must match the one in `src/info.json`. Set them in `gradle.properties` or like `gradle build -Pversion="1.5.0"`
 - `gradle clean` cleans up after a `build` by deleting the generated folders in the repo. This does not clean up after a `patch`, you have to do that yourself.
 - `gradle patch` attempts to patch the mod in your `factorioModsDirectory` for easy testing. Make sure to set the variable in gradle.properties but don't make commits with this variable set! You could use `gradle patch -PfactorioModsDirectory="directoryhere"` instead.
 
