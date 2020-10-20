@@ -1,202 +1,118 @@
--- Setup kit presets
-local kits = {}
+--control.lua
 
-kits["small"] = {}
-kits["small"]["items"] = {
-	["iron-plate"] = 200,
-	["copper-plate"] = 200,
-	["iron-gear-wheel"] = 50,
-	["transport-belt"] = 500,
-	["splitter"] = 50,
-	["underground-belt"] = 50,
-	["burner-mining-drill"] = 20,
-	["stone-furnace"] = 20,
-	["coal"] = 100
-}
-kits["small"]["quickbar"] = {
-	{1, "transport-belt"},
-	{2, "underground-belt"},
-	{3, "splitter"},
-	{4, "inserter"},
-	{5, "medium-electric-pole"},
-    {6, "burner-mining-drill"},
-    {7, "stone-furnace"},
-	{10, "car"}
-}
-	
-kits["medium"] = {}
-kits["medium"]["items"] = {
-	["iron-plate"] = 600,
-	["copper-plate"] = 400,
-	["iron-gear-wheel"] = 200,
-	["electronic-circuit"] = 200,
-	["transport-belt"] = 1100,
-	["underground-belt"] = 50,
-	["splitter"] = 50,
-	["stone-furnace"] = 100,
-	["assembling-machine-1"] = 20,
-	["inserter"] = 300,
-	["long-handed-inserter"] = 50,
-	["steel-chest"] = 50,
-	["electric-mining-drill"] = 50,
-	["medium-electric-pole"] = 200,
-	["boiler"] = 10,
-	["steam-engine"] = 20,
-	["offshore-pump"] = 1,
-	["pipe-to-ground"] = 50,
-	["pipe"] = 50,
-	["car"] = 1,
-	["coal"] = 200,
-	["construction-robot"] = 50,
-	["lab"] = 10,
-	["power-armor"] = 1,
-	["fusion-reactor-equipment"] = 1,
-	["personal-roboport-equipment"] = 5,
-	["battery-equipment"] = 3,
-}
-kits["medium"]["quickbar"] = {
-	{1, "transport-belt"},
-	{2, "underground-belt"},
-	{3, "splitter"},
-	{4, "inserter"},
-	{5, "medium-electric-pole"},
-    {6, "electric-mining-drill"},
-    {7, "stone-furnace"},
-	{10, "car"}
-}
 
-kits["big"] = {}
-kits["big"]["items"] = {
-	["iron-plate"] = 600,
-	["copper-plate"] = 400,
-	["iron-gear-wheel"] = 200,
-	["electronic-circuit"] = 200,
-	["advanced-circuit"] = 200,
-	["transport-belt"] = 1500,
-	["underground-belt"] = 50,
-	["splitter"] = 50,
-	["steel-furnace"] = 100,
-	["assembling-machine-2"] = 100,
-	["inserter"] = 300,
-	["long-handed-inserter"] = 50,
-	["steel-chest"] = 50,
-	["electric-mining-drill"] = 50,
-	["medium-electric-pole"] = 400,
-	["big-electric-pole"] = 100,
-	["logistic-chest-requester"] =  100,
-	["logistic-chest-passive-provider"] =  100,
-	["boiler"] = 20,
-	["steam-engine"] = 40,
-	["offshore-pump"] = 10,
-	["pipe-to-ground"] = 100,
-	["pipe"] = 100,
-	["chemical-plant"] = 20,
-	["oil-refinery"] = 10,
-	["car"] = 1,
-	["coal"] = 50,
-	["roboport"] = 20,
-	["construction-robot"] = 50,
-	["logistic-robot"] = 200,
-	["lab"] = 10,
-	["power-armor"] = 1,
-	["fusion-reactor-equipment"] = 1,
-	["personal-roboport-equipment"] = 5,
-	["battery-equipment"] = 3,
-}
-kits["big"]["quickbar"] = {
-	{1, "transport-belt"},
-	{2, "underground-belt"},
-	{3, "splitter"},
-	{4, "inserter"},
-	{5, "medium-electric-pole"},
-	{6, "electric-mining-drill"},
-	{7, "steel-furnace"},
-	{10, "car"}
-}
-kits["big"]["technologies"] = {
-	{"automation"},
-	{"steel-processing"},
-	{"automation-2"},
-	{"oil-processing"},
-	{"plastics"},
-	{"advanced-electronics"},
-	{"sulfur-processing"},
-	{"battery"},
-	{"electronics"},
-	{"engine"},
-	{"electric-engine"},
-	{"logistic-science-pack"},
-	{"fluid-handling"},
-	{"lubricant"},
-	{"robotics"},
-	{"logistic-robotics"},
-	{"construction-robotics"},
-	{"utility-science-pack"},
-	{"chemical-science-pack"},
-	{"advanced-electronics-2"},
-	{"low-density-structure"},
-	{"advanced-material-processing"},
-	{"logistic-system"}
-}
+-- local knownNames
 
-local spidertron_items = {
-	["spidertron"] = 1,
-	["spidertron-remote"] = 1,
-	["construction-robot"] = 50,
-	["fusion-reactor-equipment"] = 1,
-	["personal-roboport-equipment"] = 5,
-	["battery-equipment"] = 3
-}
+-- script.on_event(defines.events.on_player_changed_position,
+    -- function(event)
+        -- local player = game.get_player(event.player_index) -- get the player that moved
+        -- if they're wearing our armor
+        -- if player.character and player.get_inventory(defines.inventory.character_armor).get_item_count("fire-armor") >= 1 then
+            -- create the fire where they're standing
+            -- player.surface.create_entity{name="fire-flame", position=player.position, force="neutral"}
+        -- end
+    -- end
+-- )
 
-function on_init()
-	if not remote.interfaces["freeplay"] then return end
-	
-	local kitSetting = settings.startup["crash-quick-start-kit"].value
-	local kit = kits[kitSetting]
-	if kit == nil then
-		kit = kits["medium"]
-	end
 
-	-- Add items
-	local created_items = remote.call("freeplay", "get_created_items")
-	for k,v in pairs(kit["items"]) do
-		created_items[k] = (created_items[k] or 0) + v
-	end
 
-	-- If spidertron is selected, add more items for it
-	if settings.startup["crash-quick-start-spidertron"].value == true then
-		for k,v in pairs(spidertron_items) do
-			created_items[k] = (created_items[k] or 0) + v
-		end	
-	end
-	
-	remote.call("freeplay", "set_created_items", created_items)
-		
-end
 
-function on_player_created(event)
-	if not remote.interfaces["freeplay"] then return end
-	
-	local kitSetting = settings.startup["crash-quick-start-kit"].value
-	local kit = kits[kitSetting]
-	if kit == nil then
-		kit = kits["medium"]
-	end
-	
-	local player = game.players[event.player_index]
-	-- Unlock technologies
-	if kit["technologies"] ~= nil then
-		for k,v in pairs(kit["technologies"]) do
-			player.force.technologies[v[1]].researched = true
-		end
-	end
-	
-	-- Setup quickbar favorites
-	for k,v in pairs(kit["quickbar"]) do
-		player.set_quick_bar_slot(v[1], v[2])
-	end
-	
-end
 
-script.on_init(on_init)
-script.on_event(defines.events.on_player_created, on_player_created)
+
+
+-- local surface = game.players[1].surface
+-- surface.create_entity{
+  -- name='locomotive',
+  -- position={x=x,y=y},
+  -- force=game.players[1].force
+-- }
+
+
+
+
+
+
+
+
+
+
+
+-- get current player
+-- game.players[event.player_index]
+
+-- function give(player, itemName, amount)
+  -- local items = game.item_prototypes
+  -- if items[itemName] then
+    -- local item = {name = itemName, count = amount}
+    -- if player.can_insert(item) then
+      -- local amount = player.insert(item)
+    -- end
+  -- end
+-- end
+
+-- function take(player, itemName, amount)
+  -- local items = game.item_prototypes
+  -- if items[itemName] then
+    -- local item = {name = itemName, count = amount}
+    -- local main = player.get_inventory(defines.inventory.player_main)
+    -- local bar = player.get_inventory(defines.inventory.player_quickbar)
+    -- if main.find_item_stack(itemName) or bar.find_item_stack(itemName) then
+      -- local amount = player.remove_item(item)
+    -- end
+  -- end
+-- end
+
+
+
+
+-- function setupTrainLauncherExplosion(position, surface)
+  -- local train = {}
+  
+  -- train.origin = position
+  -- train.surface = surface
+  -- train.surface.create_entity({name = "locomotive-explosion", position = position})
+-- end
+
+-- script.on_event(defines.events.on_trigger_created_entity, function(event)
+  -- if knownNames[event.entity.name] then
+    -- script.on_event(defines.events.on_tick, ticker)
+    -- knownNames[event.entity.name](event.entity.position, event.entity.surface)
+    -- event.entity.destroy()
+  -- end
+-- end)
+
+-- function jtest(train)
+  -- train.surface.find_entities_filtered {
+    -- area = {
+	  -- {
+	    -- x = train.origin.x + radius,
+	    -- y = train.origin.y + radius,
+      -- },
+	  -- {
+	    -- x = train.origin.x + radius,
+	    -- y = train.origin.y + radius,
+      -- }
+	-- },
+	-- type = ""
+  -- }
+
+
+  -- train.surface.create_entity {
+    -- name = "explosion",
+	-- position = '',
+	-- force = game.forces.player
+  -- }
+-- end
+
+
+-- knownNames = {
+  -- ["train-launcher-explosion"] = setupTrainLauncherExplosion
+-- }
+
+
+
+
+
+
+
+

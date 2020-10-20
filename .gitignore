@@ -3,3 +3,9 @@ build
 dist
 *.zip
 *.bak
+/gradlew
+/gradlew.bat
+/.idea/modules/factorio-quick-start.iml
+/.idea/
+/gradle/wrapper/gradle-wrapper.properties
+/gradle/wrapper/gradle-wrapper.jar
