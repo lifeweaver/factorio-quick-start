@@ -126,9 +126,7 @@ task runFactorio(type:Exec) {
 
     String modsDirectory = ""
     if(runInTempModFolder.toBoolean()) {
-        if(requiredTempMods) {
-            throw new GradleException("Implement this for yourself")
-        }
+        //TODO: check info.json for dependencies.
 
         //TODO: add something that fails if files/dirs don't exist before using them?
         Path tempDir = File.createTempDir().toPath()
