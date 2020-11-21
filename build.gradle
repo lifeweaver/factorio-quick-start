@@ -1,3 +1,7 @@
+import org.apache.tools.ant.taskdefs.condition.Os
+import java.nio.file.Files
+import java.nio.file.Path
+
 def archiveName = "${modName}_${version}.zip"
 
 task clean(type:Delete) {
@@ -82,7 +86,7 @@ task moveNewMod(type: Copy) {
     into "${factorioModsDirectory}"
     doFirst {
         if (factorioModsDirectory == "") {
-            println "WARNING: The factorioModsDirectory was not set, mod zip file is in $rootDir instead" 
+            println "WARNING: The factorioModsDirectory was not set, mod zip file is in $rootDir instead"
         }
         println "Moving file ${archiveName} from ${distDirectory} to ${factorioModsDirectory}"
     }
@@ -92,4 +96,61 @@ moveNewMod.mustRunAfter backUpExistingMod
 task patch {
     dependsOn "backUpExistingMod"
     dependsOn "moveNewMod"
+}
+
+task runFactorio() {
+    doLast {
+        // Stop the task if the mod file doesn't exist.
+        File modFile = new File("${rootProject.projectDir}/${distDirectory}/${archiveName}")
+        if(!modFile.exists()) {
+            println "Mod file not found at: ${modFile.absolutePath}"
+            return
+        }
+
+
+        if (!steamInstallDirectory) {
+            /*
+			 * Do we need to check for windows? As long as there is an env pointing to the program file location and steam
+			 * is always env/Steam it should work. We can just add to the steamInstallSearchEnvs.
+			 */
+            if (Os.isFamily(Os.FAMILY_WINDOWS)) {
+                List searchEnvs = ((String) steamInstallSearchEnvs).split(',')
+                steamInstallDirectory = searchEnvs.collect { String env ->
+                    new File(System.getenv(env) + '/Steam')
+                }.find { it.exists() }
+            } else {
+                //Implement additional cases as needed as needed
+                throw new GradleException("impelment version of $name that works with your OS")
+            }
+
+            if (!steamInstallDirectory) {
+                throw new GradleException("The steamInstallDirectory was not set")
+            }
+        }
+
+        String saveFile = ""
+        if("${factorioTestSaveFile}") {
+            saveFile = "--load-game $factorioTestSaveFile"
+        }
+
+        String modsDirectory = ""
+        if(runInTempModFolder.toBoolean()) {
+            //TODO: check info.json for dependencies.
+
+            Path tempDir = File.createTempDir().toPath()
+            Path tempFile =  new File("${tempDir}/$archiveName").toPath()
+            Files.copy(modFile.toPath(), tempFile)
+
+            modsDirectory = "--mod-directory ${tempDir}"
+        }
+
+        if (Os.isFamily(Os.FAMILY_WINDOWS)) {
+            exec {
+                commandLine 'cmd', '/c', "\"$steamInstallDirectory/Steam.exe\" -applaunch 427520 $saveFile $modsDirectory $additionalFactorioArgs"
+            }
+        } else {
+            //Implement additional cases as needed as needed
+            throw new GradleException("impelment version of $name that works with your OS")
+        }
+    }
 }
